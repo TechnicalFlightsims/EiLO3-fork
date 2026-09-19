@@ -147,17 +147,20 @@
   |     
   <a href="/signout">Sign Out</a>
   ======
-  <a href="/irc.exe">Remote Console (Windows)</a>
+  <a href="/irc.exe">IRC (Windows)</a>
+  <a href="/remoteconsole.html">IRC (Web)</a>
 </div>
-
-<h1 id="row1">EiLO Overview</h1><br>
-<p id="wait">Please wait... Populating Information</p>
-
-<br><br>
+<br><br><br><br><br><br><br><br><br>
         <div class="content">
-          <h1>Online Web-based Remote Console</h1>
+<h3>Integrated Remote Console (Web)</h3>
+<!--irc-->
+<canvas id="ircscreen" width="800" height="600" style="border:1px solid #000000;">
+</canvas>
+<br>
+<button onclick="insertcad();">Insert Ctrl + Alt + Del</button>
+<button onclick="insertcad();">Insert Ctrl + Alt + Del</button>
         </div>
-
+<br><br><br>
         <footer class="footer">
             <button onclick="powermomentary();">Power Momentary</button>
             <button onclick="powerhold();">Power Hold</button>
@@ -165,6 +168,56 @@
             <button onclick="powerreset();">Power Reset</button>
         </footer>
     </div>
+
+
+<!--IRC-->
+<script>
+    var canvas = document.getElementById("ircscreen");
+    canvas.addEventListener("click", function (evt) {
+    var mousePos = getMousePos(canvas, evt);
+    //click(mousePos.x,mousePos.y);
+    alert('Left Click' + mousePos.x + ',' + mousePos.y);
+    }, false);
+
+    canvas.addEventListener('contextmenu', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+    //click(mousePos.x,mousePos.y);
+    alert('Right Click: ' + mousePos.x + ',' + mousePos.y);
+    }, false);
+
+    function refreshscreen() {
+        var canvas = document.getElementById("ircscreen");
+        var context = canvas.getContext("2d");
+        context.fillRect(0, 0, 800, 600);
+        var image = new Image();
+        image.src = ""; // screen linkie
+        image.onload = function() {
+            context.drawImage(image, 50, 50);
+        };
+    }
+    
+    
+    
+    // mouse
+    function getMousePos(canvas, evt) {
+
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
+    }
+    
+    const refreshrate = ms => new Promise(res => setTimeout(res, ms));
+
+    const screenloop = async () => {
+        await refreshrate(500);
+        refreshscreen();
+        console.log("Screen Refresh complete")
+        screenloop()
+    }
+</script>
+
 
     <script>
 
