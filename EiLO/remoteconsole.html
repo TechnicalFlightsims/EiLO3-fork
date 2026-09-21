@@ -154,6 +154,12 @@
         <div class="content">
 <h3>Integrated Remote Console (Web)</h3><br>
         <p id="key">key:</p>
+        <p id="xmouse">xmouse:</p>
+        <p id="ymouse">ymouse:</p>
+        <p id="xdist">xdist:</p>
+        <p id="ydist">ydist:</p>
+        <p id="xlast">xlast:</p>
+        <p id="ylast">ylast:</p>
 <!--irc-->
 <canvas id="ircscreen" width="800" height="600" style="border:1px solid #000000;">
 </canvas>
@@ -173,13 +179,27 @@
 
 <!--IRC-->
 <script>
+window.addEventListener("contextmenu", e => e.preventDefault());
 
-
+    function webreq(url) {
+            fetch(url).then(function(response) {
+                return response.text(); 
+            }).then(function(data) {
+                console.log(data);
+            }).catch(function(err) {
+                console.log('Fetch Error :-S', err);
+            });
+    }
 
     var canvas = document.getElementById("ircscreen");
     var height = canvas.height;
     var width = canvas.width;
-    
+    var ircheight = 600;
+    var ircwidth = 800;
+    var xlast = 1;
+    var ylast = 1;
+    var xdist = 0;
+    var ydist = 0;
     document.addEventListener('keydown',
                 function (event) {
             document.getElementById("key").innerHTML = event.key;
@@ -187,11 +207,54 @@
     
     
     canvas.addEventListener('mousemove',
-                function (event) {
-                mousex = event.clientX;
-                mousey = event.clientY;
-                
-                }, false);    
+        function (event) {
+            var rect = canvas.getBoundingClientRect();
+            mousex = event.clientX - rect.left;
+            mousey = event.clientY - rect.top;
+            var ratioy = ircheight / height;
+            var ratiox = ircwidth / width;
+            var scaledx = mousex * ratiox;
+            var scaledy = mousey * ratioy;
+            var xmouse = scaledx
+            var ymouse = scaledy;
+            if (xlast == xmouse) {
+                xdist = 0;
+            }
+            if (ylast == ymouse) {
+                ydist = 0;
+            }
+            if (xlast < xmouse) {
+                xdist = xmouse - xlast;
+                xlast = xmouse;
+            }
+            if (xlast > xmouse) {
+                xdist = xlast - xmouse;
+                xlast = xmouse;
+                xdist = xdist * -1
+            }
+            
+            if (ylast < ymouse) {
+                ydist = ymouse - ylast;
+                ylast = ymouse;
+            }
+            if (ylast > ymouse) {
+                ydist = ylast - ymouse;
+                ylast = ymouse;
+                ydist = ydist * -1
+            }
+            document.getElementById("xdist").innerHTML = xdist;
+            document.getElementById("ydist").innerHTML = ydist;
+            xlast = xmouse;
+            ylast = ymouse;
+            document.getElementById("xmouse").innerHTML = xmouse;
+            document.getElementById("ymouse").innerHTML = ymouse;
+
+            document.getElementById("xlast").innerHTML = xlast;
+            document.getElementById("ylast").innerHTML = ylast;
+            inputstring = "/mouse?" + xdist + "&" + ydist + "";
+            webreq(inputstring);
+            
+    }, false);    
     
     canvas.addEventListener("click", function (evt) {
     var mousePos = getMousePos(canvas, evt);
