@@ -152,7 +152,8 @@
 </div>
 <br><br><br><br><br><br><br><br><br>
         <div class="content">
-<h3>Integrated Remote Console (Web)</h3>
+<h3>Integrated Remote Console (Web)</h3><br>
+        <p id="key">key:</p>
 <!--irc-->
 <canvas id="ircscreen" width="800" height="600" style="border:1px solid #000000;">
 </canvas>
@@ -172,7 +173,26 @@
 
 <!--IRC-->
 <script>
+
+
+
     var canvas = document.getElementById("ircscreen");
+    var height = canvas.height;
+    var width = canvas.width;
+    
+    document.addEventListener('keydown',
+                function (event) {
+            document.getElementById("key").innerHTML = event.key;
+                }, false);    
+    
+    
+    canvas.addEventListener('mousemove',
+                function (event) {
+                mousex = event.clientX;
+                mousey = event.clientY;
+                
+                }, false);    
+    
     canvas.addEventListener("click", function (evt) {
     var mousePos = getMousePos(canvas, evt);
     //click(mousePos.x,mousePos.y);
