@@ -161,7 +161,7 @@
         <p id="xlast" hidden>xlast:</p>
         <p id="ylast" hidden>ylast:</p>
 <!--irc-->
-<canvas id="ircscreen" width="800" height="600" style="border:1px solid #000000; background-color:black;">
+<canvas id="ircscreen" width="800" height="600" style="border: 1px solid black;">
 </canvas>
 <br>
 <button onclick="insertcad();">Insert Ctrl + Alt + Del</button>
@@ -273,11 +273,14 @@ inputstring = "/keyboard?n?" + event.key;
     function refreshscreen() {
         var canvas = document.getElementById("ircscreen");
         var context = canvas.getContext("2d");
-        context.fillRect(0, 0, 800, 600);
+        //context.fillRect(0, 0, 800, 600);
+        // prevent black rectangle
         var image = new Image();
-        image.src = ""; // screen linkie
+        image.src = "/ircscreen.png"; // screen linkie
+        
+        // test image: https://upload.wikimedia.org/wikipedia/commons/b/b5/800x600_Wallpaper_Blue_Sky.png
         image.onload = function() {
-            context.drawImage(image, 50, 50);
+            context.drawImage(image, 0, 0);
         };
     }
     
@@ -296,10 +299,15 @@ inputstring = "/keyboard?n?" + event.key;
     const refreshrate = ms => new Promise(res => setTimeout(res, ms));
 
     const screenloop = async () => {
-        await refreshrate(500);
+        await refreshrate(100);
         refreshscreen();
         console.log("Screen Refresh complete")
         screenloop()
+    }
+    //screenloop();
+    function enable() {
+        screenloop();
+        
     }
 </script>
 
