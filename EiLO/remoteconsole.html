@@ -153,15 +153,15 @@
 <br><br><br><br><br><br><br><br><br>
         <div class="content">
 <h3>Integrated Remote Console (Web)</h3><br>
-        <p id="key">key:</p>
-        <p id="xmouse">xmouse:</p>
-        <p id="ymouse">ymouse:</p>
-        <p id="xdist">xdist:</p>
-        <p id="ydist">ydist:</p>
-        <p id="xlast">xlast:</p>
-        <p id="ylast">ylast:</p>
+        <p id="key" hidden>key:</p>
+        <p id="xmouse" hidden>xmouse:</p>
+        <p id="ymouse" hidden>ymouse:</p>
+        <p id="xdist" hidden>xdist:</p>
+        <p id="ydist" hidden>ydist:</p>
+        <p id="xlast" hidden>xlast:</p>
+        <p id="ylast" hidden>ylast:</p>
 <!--irc-->
-<canvas id="ircscreen" width="800" height="600" style="border:1px solid #000000;">
+<canvas id="ircscreen" width="800" height="600" style="border:1px solid #000000; background-color:black;">
 </canvas>
 <br>
 <button onclick="insertcad();">Insert Ctrl + Alt + Del</button>
@@ -202,7 +202,9 @@ window.addEventListener("contextmenu", e => e.preventDefault());
     var ydist = 0;
     document.addEventListener('keydown',
                 function (event) {
-            document.getElementById("key").innerHTML = event.key;
+inputstring = "/keyboard?n?" + event.key;
+            document.getElementById("key").innerHTML = inputstring;
+    webreq(inputstring);
                 }, false);    
     
     
