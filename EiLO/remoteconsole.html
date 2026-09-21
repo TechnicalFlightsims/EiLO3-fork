@@ -179,9 +179,9 @@
 
 <!--IRC-->
 <script>
-    function updateurl(baseUrl) {
-        var newSrc = baseUrl + '?' + new Date().getTime();
-        return newSrc;
+    function updateurl(base) {
+        var newsrc = base + '#' + new Date().getTime();
+        return newsrc;
     }
 
 
@@ -277,19 +277,22 @@ inputstring = "/keyboard?n?" + event.key;
     //click(mousePos.x,mousePos.y);
     alert('Right Click: ' + mousePos.x + ',' + mousePos.y);
     }, false);
+    var context = canvas.getContext("2d");
+    context.fillRect(0, 0, 800, 600);
+    var image = new Image();
     
     function refreshscreen() {
-        var canvas = document.getElementById("ircscreen"); 
-        var context = canvas.getContext("2d");
-        //context.fillRect(0, 0, 800, 600);
+       // var canvas = document.getElementById("ircscreen"); 
+        
+        
         // prevent black rectangle
-        var image = new Image();
-        image.src = "https://loremflickr.com/800/600/car" //screen linkie
-        //alert(image.src)
+        image.src = updateurl("https://loremflickr.com/800/600/car");
+        context.drawImage(image, 0, 0);
         // test image: https://upload.wikimedia.org/wikipedia/commons/b/b5/800x600_Wallpaper_Blue_Sky.png
-        image.onload = function() {
-            context.drawImage(image, 0, 0);
-        };
+        
+        return 0;
+        //image.onload = function() {
+        //};
     }
       
     
