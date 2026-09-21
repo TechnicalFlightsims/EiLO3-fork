@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta Http-Equiv="Cache-Control" Content="no-cache">
+<meta Http-Equiv="Pragma" Content="no-cache">
+<meta Http-Equiv="Expires" Content="0">
+<meta Http-Equiv="Pragma-directive: no-cache">
+<meta Http-Equiv="Cache-directive: no-cache">
     <title>EiLO 3 WebIRC</title>
     <style>
 
@@ -160,6 +165,7 @@
         <p id="ydist" hidden>ydist:</p>
         <p id="xlast" hidden>xlast:</p>
         <p id="ylast" hidden>ylast:</p>
+        <p id="src" >imagesrc:</p>
 <!--irc-->
 <canvas id="ircscreen" width="800" height="600" style="border: 1px solid black;">
 </canvas>
@@ -277,22 +283,22 @@ inputstring = "/keyboard?n?" + event.key;
     //click(mousePos.x,mousePos.y);
     alert('Right Click: ' + mousePos.x + ',' + mousePos.y);
     }, false);
-    var context = canvas.getContext("2d");
-    context.fillRect(0, 0, 800, 600);
-    var image = new Image();
+
     
     function refreshscreen() {
        // var canvas = document.getElementById("ircscreen"); 
         
-        
+        var context = canvas.getContext("2d");
+        var image = new Image();
         // prevent black rectangle
         image.src = updateurl("https://loremflickr.com/800/600/car");
-        context.drawImage(image, 0, 0);
-        // test image: https://upload.wikimedia.org/wikipedia/commons/b/b5/800x600_Wallpaper_Blue_Sky.png
+        document.getElementById("src").innerHTML = image.src;
+        canvas.width = canvas.width;
+        image.onload = function() {
         
-        return 0;
-        //image.onload = function() {
-        //};
+        context.drawImage(image, Math.random(), 0);
+            
+        };
     }
       
     
@@ -310,7 +316,7 @@ inputstring = "/keyboard?n?" + event.key;
     const refreshrate = ms => new Promise(res => setTimeout(res, ms));
 
     const screenloop = async () => {
-        await refreshrate(100); // 100 default
+        await refreshrate(1000); // 100 default
         refreshscreen();
         //alert("Screen Refresh complete")
         screenloop()
