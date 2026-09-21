@@ -179,7 +179,14 @@
 
 <!--IRC-->
 <script>
-window.addEventListener("contextmenu", e => e.preventDefault());
+    function updateurl(baseUrl) {
+        var newSrc = baseUrl + '?' + new Date().getTime();
+        return newSrc;
+    }
+
+
+
+    window.addEventListener("contextmenu", e => e.preventDefault());
 
     function webreq(url) {
             fetch(url).then(function(response) {
@@ -200,6 +207,7 @@ window.addEventListener("contextmenu", e => e.preventDefault());
     var ylast = 1;
     var xdist = 0;
     var ydist = 0;
+    var tick = 0;
     document.addEventListener('keydown',
                 function (event) {
 inputstring = "/keyboard?n?" + event.key;
@@ -269,21 +277,21 @@ inputstring = "/keyboard?n?" + event.key;
     //click(mousePos.x,mousePos.y);
     alert('Right Click: ' + mousePos.x + ',' + mousePos.y);
     }, false);
-
+    
     function refreshscreen() {
-        var canvas = document.getElementById("ircscreen");
+        var canvas = document.getElementById("ircscreen"); 
         var context = canvas.getContext("2d");
         //context.fillRect(0, 0, 800, 600);
         // prevent black rectangle
         var image = new Image();
-        image.src = "/ircscreen.png"; // screen linkie
-        
+        image.src = "https://loremflickr.com/800/600/car" //screen linkie
+        //alert(image.src)
         // test image: https://upload.wikimedia.org/wikipedia/commons/b/b5/800x600_Wallpaper_Blue_Sky.png
         image.onload = function() {
             context.drawImage(image, 0, 0);
         };
     }
-    
+      
     
     
     // mouse
@@ -299,9 +307,9 @@ inputstring = "/keyboard?n?" + event.key;
     const refreshrate = ms => new Promise(res => setTimeout(res, ms));
 
     const screenloop = async () => {
-        await refreshrate(100);
+        await refreshrate(100); // 100 default
         refreshscreen();
-        console.log("Screen Refresh complete")
+        //alert("Screen Refresh complete")
         screenloop()
     }
     //screenloop();
