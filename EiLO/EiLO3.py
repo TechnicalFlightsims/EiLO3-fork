@@ -1003,14 +1003,14 @@ class HostCommunication: # Communication with the server
         else:
             # Screenshot from IRC
             global cam
-            cam.start()
+            #cam.start()
             time.sleep(0.5)
             img = cam.get_image()
             pygame.time.wait(100)
             img = cam.get_image()
             pygame.image.save(img, "clientscreenshot.png")
             logprint("getscr(): Get screenshot from IRC")
-            cam.stop()
+            #cam.stop()
             return 1
 
     def oembdi_ping(ipaddr):
@@ -1760,7 +1760,35 @@ class Serv(BaseHTTPRequestHandler):
                     file_to_open = open("unauth.html",'rb').read()
                 self.send_response(200)
 
+            elif self.path == "/startirc":
+                # has irc perms?
+                if EiLO.checkauth(self.address_string(),"irc"):
+                    cam.start()
+                    file_to_open = "irc is enabled, video stream is rolling"
+                else:
+                    file_to_open = "You are not authorized to control the IRC Video Stream"
+                self.send_response(200)
 
+            
+            elif self.path == "/stopirc":
+                # has irc perms?
+                if EiLO.checkauth(self.address_string(),"irc"):
+                    cam.stop()
+                    file_to_open = "irc has ended, video stream is stopped"
+                else:
+                    file_to_open = "You are not authorized to control the IRC Video Stream"
+                self.send_response(200)
+
+            elif self.path == "/ircstream.png":
+                # has irc perms?
+                if EiLO.checkauth(self.address_string(),"irc"):
+                    img = cam.get_image()
+                    pygame.image.save(img, "ircstream.png")
+                    file_to_open = open("ircstream.png",'rb').read()
+                else:
+                    file_to_open = "You are not authorized to control the IRC Video Stream"
+                self.send_response(200)
+                
             else:
                 file_to_open = "EiLO3 - File not found"
                 self.send_response(200) # There is a reason why this isnt 404. It prevents proxy/VPN servers from displying there "custom erorr page"... I hate Proxy servers.
@@ -2589,13 +2617,13 @@ else:
         RESOLUTION = (800, 600)
         cam = pygame.camera.Camera(cam_list[0], RESOLUTION)
         IRCENABLED = 1
-        print("Found and mounted a capture card to use with iRC")
+        print("Found and mounted a capture card for IRC")
     except:
         print("Could not attach a capture card")
 printlog(f"{computername} | New EiLO Console Session Initiated")
 phnyautostartThread = threading.Thread(target=phnyautostart, args=())
 phnyautostartThread.start()
-print("PhnyAutoStart is currently disabled. To enable it, check out the autostart command")
+print("If you would like to automatically press the power button at a certain time, see help command")
 SysInfo.determineInitalPowerState()
 while True:
     print("--- INIT Local EiLO 3 Console Session ---")
