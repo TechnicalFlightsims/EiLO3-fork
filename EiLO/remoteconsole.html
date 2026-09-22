@@ -8,6 +8,15 @@
 <meta Http-Equiv="Expires" Content="0">
 <meta Http-Equiv="Pragma-directive: no-cache">
 <meta Http-Equiv="Cache-directive: no-cache">
+<meta Http-Equiv="Cache" content="no-cache">
+<meta Http-Equiv="Pragma-Control" content="no-cache">
+<meta Http-Equiv="Cache-directive" Content="no-cache">
+<meta Http-Equiv="Pragma-directive" Content="no-cache">
+<meta Http-Equiv="Cache-Control" Content="no-cache">
+<meta Http-Equiv="Pragma" Content="no-cache">
+<meta Http-Equiv="Expires" Content="0">
+<meta Http-Equiv="Pragma-directive: no-cache">
+<meta Http-Equiv="Cache-directive: no-cache">
     <title>EiLO 3 WebIRC</title>
     <style>
 
@@ -95,7 +104,7 @@
   width: 160px; /* Set the width of the sidebar */
   position: fixed; /* Fixed Sidebar (stay in place on scroll) */
   z-index: 0; /* Stay on top */
-  top: 0; /* Stay at the top */
+  top: 0; /* Stay at the top */ 
   left: 0;
   background-color: #f0f0f0; /* Black */
   overflow-x: hidden; /* Disable horizontal scroll */
@@ -158,13 +167,13 @@
 <br><br><br><br><br><br><br><br><br>
         <div class="content">
 <h3>Integrated Remote Console (Web)</h3><br>
-        <p id="key" hidden>key:</p>
-        <p id="xmouse" hidden>xmouse:</p>
-        <p id="ymouse" hidden>ymouse:</p>
-        <p id="xdist" hidden>xdist:</p>
-        <p id="ydist" hidden>ydist:</p>
-        <p id="xlast" hidden>xlast:</p>
-        <p id="ylast" hidden>ylast:</p>
+        <p id="key" >key:</p>
+        <p id="xmouse" >xmouse:</p>
+        <p id="ymouse" >ymouse:</p>
+        <p id="xdist" >xdist:</p>
+        <p id="ydist" >ydist:</p>
+        <p id="xlast" >xlast:</p>
+        <p id="ylast" >ylast:</p>
         <p id="src" >imagesrc:</p>
 <!--irc-->
 <canvas id="ircscreen" width="800" height="600" style="border: 1px solid black;">
@@ -186,11 +195,21 @@
 <!--IRC-->
 <script>
     function updateurl(base) {
-        var newsrc = base + '#' + new Date().getTime();
+        var newsrc = base + '' + new Date().getTime();
         return newsrc;
     }
 
 
+
+async function drawimage(canvasId, imageUrl) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const response = await fetch(imageUrl, { cache: 'no-store' });
+  const blob = await response.blob();
+
+  const imageBitmap = await createImageBitmap(blob);
+  ctx.drawImage(imageBitmap, 0, 0);
+}
 
     window.addEventListener("contextmenu", e => e.preventDefault());
 
@@ -296,12 +315,12 @@ inputstring = "/keyboard?n?" + event.key;
         canvas.width = canvas.width;
         image.onload = function() {
         
-        context.drawImage(image, Math.random(), 0);
+        context.drawImage(image, Math.random()*100, 0);
             
         };
     }
       
-    
+     
     
     // mouse
     function getMousePos(canvas, evt) {
@@ -316,8 +335,8 @@ inputstring = "/keyboard?n?" + event.key;
     const refreshrate = ms => new Promise(res => setTimeout(res, ms));
 
     const screenloop = async () => {
-        await refreshrate(1000); // 100 default
-        refreshscreen();
+        await refreshrate(0); // 100 default
+        drawimage("ircscreen","https://loremflickr.com/800/600/");
         //alert("Screen Refresh complete")
         screenloop()
     }
