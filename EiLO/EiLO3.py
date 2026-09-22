@@ -649,31 +649,30 @@ def command(): # This is locally
 
         command()
     if cmd == "autostart":
-        print("\nPhnyAutoStart - Version 1.0\n")
-        print("Program Help")
+        print("\nAutostart - Addon Version 2.0\n")
+        print("== Program Help ==")
         print("autostart time=<am/pm> hour=<hour>  --  Set the time to which PhnyAutoStart Operates at")
         print("autostart on -- Enable PhnyAutoStart")
         print("autostart off -- Disable PhnyAutoStart\n")
         command()
     if cmd == "autostart on":
         # enable
-        print("PhnyAutoStart Enabled")
-        global phnyautostartenabled
-        phnyautostartenabled = 1
+        print("Addons@Autostart: Autostart Enabled")
+        addons.autostart.autostartenabled  = 1
         command()
     if cmd == "autostart off":
-        print("PhnyAutoStart Disabled")
-        phnyautostartenabled = 0
+        print("Addons@Autostart: Autostart Disabled")
+        addons.autostart.autostartenabled = 0
         command()
     try:
         thesplit = cmd.split("hour=")
         if str(thesplit[0]) == "autostart time=am ":
             print(f"PhnyAutoStart will boot the system at {thesplit[1]} A.M. Every day")
-            updatetime(int(thesplit[1]),0)
+            addons.autostart.updatetime(int(thesplit[1]),0)
             command()
         if str(thesplit[0]) == "autostart time=pm ":
             print(f"PhnyAutoStart will boot the system at {thesplit[1]} P.M. Every day")
-            updatetime(int(thesplit[1]),1)
+            addons.autostart.updatetime(int(thesplit[1]),1)
             command()
     except:
         ae = 1
@@ -2546,8 +2545,12 @@ class HID:
 
 # Addons
 class addons:
+    print("Init'ing ADDONS Please wait...")
+
+    # Autostart addon (Orignally named PhnyAutostart)
     class autostart:
         addon-name = "autostart"
+        autostartenabled = 0
         def updatetime(hour,pm):
             with open("addons/autostart-config.txt", "w") as f:
             hourmil = hour
@@ -2555,17 +2558,24 @@ class addons:
                 hourmil = hourmil + 12
                 logprint(f"ADDONS@Autostart: Military time: {hourmil}")
                 f.write(f"{hourmil}")
-        def init():
+                
+        def init(): # Put your addon initalization code here!
             if os.path.isfile("addons/autostart-config.txt") != True:
                 print("ADDONS@Autostart: Autostart doesnt have a config file! Ill create one now. (addons/autostart-config.txt)")
                 addons.autostart.updatetime(6,0)
-                print("")
-                print("ADDONS@Autostart: NOTE: The system has defaulted autostart to OFF! To configure this, see the autostart command")
+                print("ADDONS@Autostart: NOTE: The system has set autostart to OFF! To configure autostart, see the autostart command")
                 print("ADDONS@Autostart: Default autostart hour: 6 A.M. (Disabled)")
+            while True:
+                if addons.autostart.autostartenabled == 1:
+                    print("ADDONS: Init AutoStart!\nPhnyAutoStart Preparing... ~30 seconds till first operation.")
+                    time.sleep(30)
+                    print("ADDONS@Autostart: Autostart Ready!")
+                    addons.autostart.chck(readconfig())
+                time.sleep(5)
 
         def customaction():
             global powerstate
-            printlog(f"{computername} | CONSOLE | AUTOMATED TIME EVENT: PhnyAutoStart Triggered!")
+            printlog(f"ADDONS@Autostart: {computername} | CONSOLE | AUTOMATED TIME EVENT: Autostart Triggered!")
             writeserialdata(b"A")
             powerstate == 1
             time.sleep(3800) # Wait around a little more than an hour to prevent retriggering.
@@ -2581,30 +2591,16 @@ class addons:
         def chck(confh):
             while True:
                 time.sleep(60)
-                global phnyautostartenabled
-                if phnyautostartenabled == 0:
+                if addons.autostart.autostartenabled == 0:
                     return
                 dtime = datetime.datetime.now()
                 hour = dtime.hour
                 if hour == confh:
                     while True:
                         print("ADDONS@Autostart: Its time to turn on!")
-                        customaction()
+                        addons.autostart.customaction()
                         break
-                
-        def phnyautostart():
-            while True:
-                global phnyautostartenabled
-                if phnyautostartenabled == 0:
-                    ae = 1
-                else: 
-                    print("Init PhnyAutoStart!\nPhnyAutoStart Preparing... ~30 seconds till first operation.")
-                    time.sleep(30)
-                    print("PhnyAutoStart Ready!")
-                    addons.autostart.chck(readconfig())
-                time.sleep(5)
-
-
+        
 
 
 # Now Main Code (NMC)
