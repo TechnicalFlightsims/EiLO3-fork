@@ -8,9 +8,8 @@
 # Future ideas: Make an effort to allow for windows serial communcation to the controller instead
 # Recomended python version: 3.8.8
 # If you ever want to try this software out, Or if you need help setting it up. Ask me, id love to help
-
+print("Externally Integrated Lights-Out Version 3.0 - Starting up...")
 # Regular imports
-print("BTW EiLO3 must be ran with SUDO! As it requres extra permissions to control the Virtual USB drive")
 import serial, os, requests, sys, time, socket, threading, datetime, platform, subprocess, hashlib, math, cv2, pickle, struct, pygame, pygame.camera, io, cgi
 # from's
 from zlib import compress
@@ -1656,7 +1655,6 @@ class Serv(BaseHTTPRequestHandler):
                         print(modifier)
                 else:
                     modifier = []
-                
                 logprint("HTTP API MODIFIER:")
                 logprint(modifier)
                 keypress = keyinput[2]
@@ -1747,9 +1745,24 @@ class Serv(BaseHTTPRequestHandler):
                 file_to_open = localip
                 self.send_response(200)
 
+            elif self.path == "/pwer":
+                if EiLO.checkauth(self.address_string(),"pwer"):
+                    file_to_open = "yes"
+                else:
+                    file_to_open = "no"
+                self.send_response(200)
+            
+            elif self.path == "/remoteconsole.html":
+                # has irc perms?
+                if EiLO.checkauth(self.address_string(),"irc"):
+                    file_to_open = open("remoteconsole.html",'rb').read()
+                else:
+                    file_to_open = open("unauth.html",'rb').read()
+                self.send_response(200)
+
 
             else:
-                file_to_open = "File not found"
+                file_to_open = "EiLO3 - File not found"
                 self.send_response(200) # There is a reason why this isnt 404. It prevents proxy/VPN servers from displying there "custom erorr page"... I hate Proxy servers.
         self.end_headers()
         try:
