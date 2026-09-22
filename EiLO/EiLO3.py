@@ -343,65 +343,8 @@ def printlog(message):
     }
     if weburl != "NONE":
         x = requests.post(weburl, json=data) # send the message
-
-
-def updatetime(hour,pm):
-    with open("config.txt", "w") as f:
-        hourmil = hour
-        if pm == 1:
-            hourmil = hourmil + 12
-        logprint(f"Military time: {hourmil}")
-        f.write(f"{hourmil}")
-
-if os.path.isfile("config.txt") != True:
-    print("ADDONS: Phnyautostart doesnt have a config file! Ill create one now. (config.txt)")
-    updatetime(6,0)
-    print("")
-    print("NOTE: The system has defaulted autostart to OFF! To configure this, see the autostart command")
-    print("Default autostart hour: 6 A.M.")
-
-
-
-def customaction():
-    global powerstate
-    printlog(f"{computername} | CONSOLE | AUTOMATED TIME EVENT: PhnyAutoStart Triggered!")
-    writeserialdata(b"A")
-    powerstate == 1
-    time.sleep(3800) # Wait around a little more than an hour to prevent retriggering.
-
-def readconfig():
-    fn = "config.txt"
-    with open(fn) as f:
-        for line in f:
-            hourmain = int(line.rstrip()) 
-            f.close()
-            return hourmain
-
-def chck(confh):
-    while True:
-        time.sleep(60)
-        global phnyautostartenabled
-        if phnyautostartenabled == 0:
-            return
-        dtime = datetime.datetime.now()
-        hour = dtime.hour
-        if hour == confh:
-            while True:
-                print("PhnyAutoStart Its time to turn on!")
-                customaction()
-                break
-                
-def phnyautostart():
-    while True:
-        global phnyautostartenabled
-        if phnyautostartenabled == 0:
-            ae = 1
-        else: 
-            print("Init PhnyAutoStart!\nPhnyAutoStart Preparing... ~30 seconds till first operation.")
-            time.sleep(30)
-            print("PhnyAutoStart Ready!")
-            chck(readconfig())
-        time.sleep(5)
+# Original Addon Location
+# Right here aeaerighthereeilo
 
 
 def writeserialdata(msg):
@@ -2599,6 +2542,69 @@ class HID:
         #mousereport[0] = buttonbytefull
         # click it
         HID.click(bytes(mousereport),0)
+# End HID API
+
+# Addons
+class addons:
+    class autostart:
+        addon-name = "autostart"
+        def updatetime(hour,pm):
+            with open("addons/autostart-config.txt", "w") as f:
+            hourmil = hour
+            if pm == 1:
+                hourmil = hourmil + 12
+                logprint(f"ADDONS@Autostart: Military time: {hourmil}")
+                f.write(f"{hourmil}")
+        def init():
+            if os.path.isfile("addons/autostart-config.txt") != True:
+                print("ADDONS@Autostart: Autostart doesnt have a config file! Ill create one now. (addons/autostart-config.txt)")
+                addons.autostart.updatetime(6,0)
+                print("")
+                print("ADDONS@Autostart: NOTE: The system has defaulted autostart to OFF! To configure this, see the autostart command")
+                print("ADDONS@Autostart: Default autostart hour: 6 A.M. (Disabled)")
+
+        def customaction():
+            global powerstate
+            printlog(f"{computername} | CONSOLE | AUTOMATED TIME EVENT: PhnyAutoStart Triggered!")
+            writeserialdata(b"A")
+            powerstate == 1
+            time.sleep(3800) # Wait around a little more than an hour to prevent retriggering.
+
+        def readconfig():
+            fn = "config.txt"
+            with open(fn) as f:
+                for line in f:
+                    hourmain = int(line.rstrip()) 
+                    f.close()
+                    return hourmain
+
+        def chck(confh):
+            while True:
+                time.sleep(60)
+                global phnyautostartenabled
+                if phnyautostartenabled == 0:
+                    return
+                dtime = datetime.datetime.now()
+                hour = dtime.hour
+                if hour == confh:
+                    while True:
+                        print("ADDONS@Autostart: Its time to turn on!")
+                        customaction()
+                        break
+                
+        def phnyautostart():
+            while True:
+                global phnyautostartenabled
+                if phnyautostartenabled == 0:
+                    ae = 1
+                else: 
+                    print("Init PhnyAutoStart!\nPhnyAutoStart Preparing... ~30 seconds till first operation.")
+                    time.sleep(30)
+                    print("PhnyAutoStart Ready!")
+                    addons.autostart.chck(readconfig())
+                time.sleep(5)
+
+
 
 
 # Now Main Code (NMC)
